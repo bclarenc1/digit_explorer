@@ -29,7 +29,7 @@ def compute_points(digit_sequence, dxs, dys):
 
 def get_path_params(nb_digits):
     """Some number- and digits-agnostic plot params."""
-    cols = [plt.cm.RdYlBu(i / (nb_digits-1)) for i in range(nb_digits+1)]
+    cols = [plt.cm.RdYlBu((i-1) / nb_digits) for i in range(nb_digits+1)]
     avg_step = max(1, nb_digits // 1000)
 
     return (cols, avg_step)

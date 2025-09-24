@@ -22,7 +22,7 @@ def add_inset(ax, base, legend_position="upper right"):
         inset_ax.text(x_labels[i], y_labels[i], str(i), ha='center', va='center', fontsize=10)
 
 
-def plot_sequence(pt_coords, number_params, legend_position="upper right", bool_save=True):
+def plot_sequence(pt_coords, number_params, legend_position="upper right", bool_show=False, bool_save=True):
     """Plot the colored path of the digit sequence."""
     xs, ys = pt_coords
     number_name, base, nb_digits = number_params
@@ -46,8 +46,12 @@ def plot_sequence(pt_coords, number_params, legend_position="upper right", bool_
     latex_name = get_latex_name(number_name)
     ax.set_title(f"{nb_digits:,} digits of {latex_name} (base {base})")
 
-    # save figure?
+    # show or save figure?
     if bool_save:
         savepath = f"out/{number_name}_{base:02d}_{nb_digits:06d}.png"
         fig.savefig(savepath)
-        print(f"Plot saved: {savepath}")
+        print(f"  Plot saved: {savepath}")
+    if bool_show:
+        fig.show()
+    else:
+        plt.close(fig)
