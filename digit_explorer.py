@@ -3,7 +3,18 @@
 # pylint: disable=superfluous-parens
 
 """
-Main file to run the digit explorer algorithm.
+Main script for visualizing digit trajectories of mathematical constants.
+
+This script allows you to select constants, bases, and digit counts via command-line arguments,
+computes their digit sequences, converts them to trajectory points, and plots or saves the resulting images.
+
+Usage
+-----
+Run from the command line with optional arguments for constants, bases, and digit counts.
+
+Example
+-------
+python digit_explorer.py --constant pi --digits 31416 --base 10
 
 @author: Benjamin Clarenc
 @date:   2025-09-24
@@ -13,7 +24,6 @@ Main file to run the digit explorer algorithm.
 import argparse
 
 import matplotlib.pyplot as plt
-from tqdm import tqdm
 
 from core.compute_digits import compute_digit_sequence, get_points_from_digits
 from visu.plot_sequence import plot_sequence
@@ -22,9 +32,10 @@ MAX_DIGITS     = 100_000
 DEFAULT_DIGITS = 31_416
 DEFAULT_BASE   = 10
 
-if __name__ == "__main__":
+def main() -> None:
+    """Parse command-line arguments and run the digit trajectory plotting workflow."""
     parser = argparse.ArgumentParser(
-        description=("Plot the digit trajectory for a given constant and a given base. The image is saved in folder out/ as"
+        description=("Plot the digit trajectory of a given constant in a given base. The image is saved in folder out/ as"
                      + " as '<constant>_<base>_<digits>.png'"),
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("-c", "--constant", nargs="+", type=str, default=["pi"],
@@ -34,9 +45,10 @@ if __name__ == "__main__":
     parser.add_argument("-b", "--base", nargs="+", type=int, default=[DEFAULT_BASE],
                         help=f"base(s) of the constant(s). Must be > 1. Default is {DEFAULT_BASE}")
     parser.add_argument("--show", action="store_true", default=False,
-                        help="if True, show plot(s) in individual window(s). Default is False")
+                        help="if given, show plot(s) in individual window(s). Default is False")
     parser.add_argument("--no-save", action="store_false", dest="save", default=True,
-                        help="if True, do not save PNG image(s). Relevant if --show is used. Default is False (i.e., plots are saved)")
+                        help="if given, do not save PNG image(s). If not, images are saved"
+                        + " in folder out/ as '<constant>_<base>_<digits>.png, Default is False")
     parser.epilog = ("Examples:\n"
                 + f"  python {parser.prog}                                           -> plot the first 31416 digits of pi in base 10\n"
                 + f"  python {parser.prog} --constant phi --digits 20000 --base 16   -> plot the first 20000 digits of phi in base 16\n"
@@ -59,8 +71,6 @@ if __name__ == "__main__":
     args.base = [b for b in args.base if b > 1]
 
     # Loopy loops
-    # for constant_name in tqdm(args.constant, desc="Constants", position=0, leave=True):
-    #     for base in tqdm(args.base, desc=f"Bases ({constant_name})", position=1, leave=False):
     for constant_name in args.constant:
         for base in args.base:
             for nb_digits in args.digits:
@@ -74,3 +84,7 @@ if __name__ == "__main__":
     if args.show:
         # keep windows open
         plt.show()
+
+
+if __name__ == "__main__":
+    main()

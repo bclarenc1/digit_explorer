@@ -1,13 +1,30 @@
-""" TODO """
+# pylint: disable=too-many-locals
+
+"""Methods for plotting a digit trajectory."""
+
+from typing import Tuple
 
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from matplotlib.axes import Axes
 
-from utils.plot import get_latex_name, get_path_params
+from utils.plot import generate_path_params, build_latex_name
 
-def add_inset(ax, base, legend_position="upper right"):
-    """ TODO """
+def add_inset(ax: Axes, base: int, legend_position: str = "upper right") -> None:
+    """
+    Add a custom inset legend to the given axis, showing direction for each digit.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        Axis to which the inset will be added.
+    base : int
+        Radix base (number of possible directions).
+    legend_position : str, optional
+        Position of inset legend (default is "upper right").
+    """
+
     inset_ax = inset_axes(ax, width="20%", height="20%", loc=legend_position)
     inset_ax.set_aspect('equal')
     inset_ax.axis('off')
@@ -22,11 +39,28 @@ def add_inset(ax, base, legend_position="upper right"):
         inset_ax.text(x_labels[i], y_labels[i], str(i), ha='center', va='center', fontsize=10)
 
 
-def plot_sequence(pt_coords, number_params, legend_position="upper right", bool_show=False, bool_save=True):
-    """Plot the colored path of the digit sequence."""
+def plot_sequence(pt_coords: Tuple[np.ndarray, np.ndarray],
+                  number_params: Tuple[str, int, int], legend_position: str = "upper right",
+                  bool_show: bool = False, bool_save: bool = True) -> None:
+    """
+    Plot the colored path of the digit sequence.
+
+    Parameters
+    ----------
+    pt_coords : tuple of ndarray
+        (xs, ys) coordinates of the digit sequence.
+    number_params : tuple
+        (number_name, base, nb_digits) for the sequence.
+    legend_position : str, optional
+        Position of inset legend (default is "upper right").
+    bool_show : bool, optional
+        If True, display the plot (default is False).
+    bool_save : bool, optional
+        If True, save the plot (default is True).
+    """
     xs, ys = pt_coords
     number_name, base, nb_digits = number_params
-    cols, avg_step = get_path_params(nb_digits)
+    cols, avg_step = generate_path_params(nb_digits)
 
     fig, ax = plt.subplots(1, 1, figsize=(8,8))
 
@@ -43,7 +77,7 @@ def plot_sequence(pt_coords, number_params, legend_position="upper right", bool_
     add_inset(ax, base, legend_position)
 
     # title
-    latex_name = get_latex_name(number_name)
+    latex_name = build_latex_name(number_name)
     ax.set_title(f"{nb_digits:,} digits of {latex_name} (base {base})")
 
     # show or save figure?
