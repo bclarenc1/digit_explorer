@@ -7,20 +7,21 @@ arbitrary bases, and to convert those sequences into xy-plane coordinates for vi
 
 from typing import Tuple, Any
 
-from mpmath import mp
 import numpy as np
+from mpmath import mp
 
 from utils.digits import get_nb_digits_base_10, get_digits_in_base
 from utils.plot import compute_steps, compute_points
+from utils.expression import parse_expr
 
-def compute_digit_sequence(number_name: str, base: int, nb_digits: int) -> np.ndarray:
+def compute_digit_sequence(expr: str, base: int, nb_digits: int) -> np.ndarray:  # type: ignore
     """
-    Compute the first `nb_digits` digits of a named number in a given base.
+    Compute the first `nb_digits` digits of a constant in a given base.
 
     Parameters
     ----------
-    number_name : str
-        Name of the mathematical constant.
+    expr : str
+        String expression representing a number.
     base : int
         Radix base for conversion.
     nb_digits : int
@@ -31,15 +32,10 @@ def compute_digit_sequence(number_name: str, base: int, nb_digits: int) -> np.nd
     digit_sequence : ndarray of int
         Array of digits in the given base.
     """
-    if number_name == "pi":
-        number = mp.pi
-    elif number_name == "e":
-        number = mp.e
-    elif number_name == "phi":
-        number = mp.phi
-    else:
-        print("Wait, which number?")
-        raise AssertionError
+
+    # convert expression into actual mpf number
+    number = parse_expr(expr)
+    print(number)
 
     # compute 10-precision
     nb_digits_10 = get_nb_digits_base_10(base, nb_digits)

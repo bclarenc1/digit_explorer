@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from matplotlib.axes import Axes
 
-from utils.plot import generate_path_params, build_latex_name
+from utils.plot import generate_path_params, build_latex_name, build_basename
 
 def add_inset(ax: Axes, base: int, legend_position: str = "upper right") -> None:
     """
@@ -50,7 +50,7 @@ def plot_sequence(pt_coords: Tuple[np.ndarray, np.ndarray],
     pt_coords : tuple of ndarray
         (xs, ys) coordinates of the digit sequence.
     number_params : tuple
-        (number_name, base, nb_digits) for the sequence.
+        (expr, base, nb_digits) for the sequence.
     legend_position : str, optional
         Position of inset legend (default is "upper right").
     bool_show : bool, optional
@@ -59,7 +59,7 @@ def plot_sequence(pt_coords: Tuple[np.ndarray, np.ndarray],
         If True, save the plot (default is True).
     """
     xs, ys = pt_coords
-    number_name, base, nb_digits = number_params
+    expr, base, nb_digits = number_params
     cols, avg_step = generate_path_params(nb_digits)
 
     fig, ax = plt.subplots(1, 1, figsize=(8,8))
@@ -77,12 +77,13 @@ def plot_sequence(pt_coords: Tuple[np.ndarray, np.ndarray],
     add_inset(ax, base, legend_position)
 
     # title
-    latex_name = build_latex_name(number_name)
+    latex_name = build_latex_name(expr)
     ax.set_title(f"{nb_digits:,} digits of {latex_name} (base {base})")
 
     # show or save figure?
     if bool_save:
-        savepath = f"out/{number_name}_{base:02d}_{nb_digits:06d}.png"
+        basename = build_basename(expr)
+        savepath = f"out/{basename}_{base:02d}_{nb_digits:06d}.png"
         fig.savefig(savepath)
         print(f"  Plot saved: {savepath}")
     if bool_show:

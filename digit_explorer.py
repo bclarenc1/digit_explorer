@@ -38,7 +38,7 @@ def main() -> None:
         description=("Plot the digit trajectory of a given constant in a given base. The image is saved in folder out/ as"
                      + " as '<constant>_<base>_<digits>.png'"),
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("-c", "--constant", nargs="+", type=str, default=["pi"],
+    parser.add_argument("-c", "--constant", nargs="+", type=str, default=["pi"], dest="expr",
                         help="constant(s) of which to plot the digit trajectory. Valid values are: 'pi', 'e', 'phi'. Default is 'pi'")
     parser.add_argument("-d", "--digits", nargs="+", type=int, default=[DEFAULT_DIGITS],
                         help=f"number(s) of digits to plot. Max is {MAX_DIGITS}. Default is {DEFAULT_DIGITS}")
@@ -71,13 +71,13 @@ def main() -> None:
     args.base = [b for b in args.base if b > 1]
 
     # Loopy loops
-    for constant_name in args.constant:
+    for expr in args.expr:
         for base in args.base:
             for nb_digits in args.digits:
                 s = "" if args.digits == 1 else "s"
-                print(f"# Plotting {constant_name} in base {base} with {nb_digits:,} digit{s}")
-                constant_params = (constant_name, base, nb_digits)
-                digit_sequence = compute_digit_sequence(constant_name, base, nb_digits)
+                print(f"# Plotting {expr} in base {base} with {nb_digits:,} digit{s}")
+                constant_params = (expr, base, nb_digits)
+                digit_sequence = compute_digit_sequence(expr, base, nb_digits)
                 pt_coords = get_points_from_digits(digit_sequence, base)
                 plot_sequence(pt_coords, constant_params, bool_show=args.show, bool_save=args.save)
 
