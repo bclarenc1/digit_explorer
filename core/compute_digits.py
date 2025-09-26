@@ -46,7 +46,6 @@ def compute_digit_sequence(expr: str, base: int, nb_digits: int) -> np.ndarray: 
     nb_digits_10 = get_nb_digits_base_10(base, nb_digits)
     shift = floor(log10(fabs(number))) + 1
     mp.dps = nb_digits_10 + shift
-    print(f"  {number = }\n  {mp.dps = }")
 
     # compute base-b digit sequence
     digit_sequence = get_digits_in_base(number, base, nb_digits)
