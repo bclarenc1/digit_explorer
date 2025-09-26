@@ -8,7 +8,7 @@ arbitrary bases, and to convert those sequences into xy-plane coordinates for vi
 from typing import Tuple, Any
 
 import numpy as np
-from mpmath import mp
+from mpmath import mp, floor, log10, fabs
 
 from utils.digits import get_nb_digits_base_10, get_digits_in_base
 from utils.plot import compute_steps, compute_points
@@ -35,11 +35,18 @@ def compute_digit_sequence(expr: str, base: int, nb_digits: int) -> np.ndarray: 
 
     # convert expression into actual mpf number
     number = parse_expr(expr)
-    print(number)
 
-    # compute 10-precision
+    # compute precision in base 10.
+    # mp.dps is the number of significant digits, including the whole part,
+    # and excluding leading 0s in small numbers (like 0.004):
+    # it must be adjusted for all cases
+    # if   1 <= |x|,       shift = number of digits in int(|x|)
+    # if 0.1 <= |x| < 1,   shift = 0
+    # if        |x| < 0.1, shift = number of leading 0s in the decimal places
     nb_digits_10 = get_nb_digits_base_10(base, nb_digits)
-    mp.dps = nb_digits_10 + len(str(int(number)))  # need the whole part
+    shift = floor(log10(fabs(number))) + 1
+    mp.dps = nb_digits_10 + shift
+    print(f"  {number = }\n  {mp.dps = }")
 
     # compute base-b digit sequence
     digit_sequence = get_digits_in_base(number, base, nb_digits)
