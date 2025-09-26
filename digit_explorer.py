@@ -27,10 +27,12 @@ import matplotlib.pyplot as plt
 
 from core.compute_digits import compute_digit_sequence, get_points_from_digits
 from visu.plot_sequence import plot_sequence
+from utils.expression import STANDARD_FCTS, STANDARD_CSTS
 
 MAX_DIGITS     = 100_000
 DEFAULT_DIGITS = 31_416
 DEFAULT_BASE   = 10
+
 
 def main() -> None:
     """Parse command-line arguments and run the digit trajectory plotting workflow."""
@@ -49,15 +51,29 @@ def main() -> None:
     parser.add_argument("--no-save", action="store_false", dest="save", default=True,
                         help="if given, do not save PNG image(s). If not, images are saved"
                         + " in folder out/ as '<constant>_<base>_<digits>.png, Default is False")
+    parser.add_argument("-l", "--list", action="store_true",
+                        help="if given, show the lists of valid mathematical functions and constants.")
+
     parser.epilog = ("Examples:\n"
-                + f"  python {parser.prog}                                           -> plot the first 31416 digits of pi in base 10\n"
-                + f"  python {parser.prog} --constant phi --digits 20000 --base 16   -> plot the first 20000 digits of phi in base 16\n"
-                + f"  python {parser.prog} -c phi -d 20000 -base 16 --show --no-save -> show the previous trajectory and do not save it\n"
-                + f"  python {parser.prog} -c e pi -d 1234 5678 -b 7 11 13           -> plot the first 1234 and 5678 digits of e and pi"
-                +  " in bases 7, 11 and 13, and save them in 12 separate files\n")
+                  + f'  python {parser.prog}                                                 -> plot the first 31416 digits of pi in base 10\n'
+                  + f'  python {parser.prog} --constant "phi" --digits 20000 --base 16       -> plot the first 20000 digits of phi in base 16\n'
+                  + f'  python {parser.prog} -c "phi" -d 20000 -base 16 --show --no-save     -> show the previous trajectory and do not save it\n'
+                  + f'  python {parser.prog} -c "e" "pi" -d 1234 5678 -b 7 11 13             -> plot the first 1234 and 5678 digits of e and pi'
+                  +  ' in bases 7, 11 and 13, and save them in 12 separate files\n'
+                  + f'  python {parser.prog} -c "sin(log10(sqrt(apery**3/(euler+1))))" -d 50 -> plot the first 50 digits of this awful expression\n\n'
+                  +  'Important note:\n'
+                  +  '  An expression cannot start with "-" (like --constant "-2*pi"). Either add an initial space (--constant " -2*pi")'
+                  +  ' or rephrase the expression (--constant "pi*(-2)").\n\n'
+                  +  'Note for --nerds-- astute users:\n'
+                  +  '  You may have noticed that the very last plotted digit is sometimes rounded up. This is due to how digits are computed given a precision.\n')
     args = parser.parse_args()
 
-    # Check intputs
+    # Check inputs
+    if args.list:
+        print("Valid functions:\n  " + ", ".join(STANDARD_FCTS))
+        print("Valid constants:\n  " + ", ".join(STANDARD_CSTS))
+        return
+
     # Validity of constant strings is checked later, when interpreted as numbers
 
     for nd in args.digits:
