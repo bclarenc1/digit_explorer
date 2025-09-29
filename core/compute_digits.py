@@ -33,8 +33,11 @@ def compute_digit_sequence(expr: str, base: int, nb_digits: int) -> np.ndarray: 
         Array of digits in the given base.
     """
 
-    # convert expression into actual mpf number
-    number = parse_expr(expr)
+    # convert expression into rough mpf number.
+    # on the first iteration, eval() uses the default precision (15 significant digits);
+    # so we will need to re-eval() later with the precision needed.
+    # Fortunately we just need the whole part here
+    number_rough = parse_expr(expr)
 
     # compute precision in base 10.
     # mp.dps is the number of significant digits, including the whole part,
@@ -42,10 +45,11 @@ def compute_digit_sequence(expr: str, base: int, nb_digits: int) -> np.ndarray: 
     # it must be adjusted for all cases
     # if   1 <= |x|,       shift = number of digits in int(|x|)
     # if 0.1 <= |x| < 1,   shift = 0
-    # if        |x| < 0.1, shift = number of leading 0s in the decimal places
+    # if        |x| < 0.1, shift = -1*(number of leading 0s in the decimal places)
     nb_digits_10 = get_nb_digits_base_10(base, nb_digits)
-    shift = floor(log10(fabs(number))) + 1
+    shift = floor(log10(fabs(number_rough))) + 1
     mp.dps = nb_digits_10 + shift
+    number = parse_expr(expr)
 
     # compute base-b digit sequence
     digit_sequence = get_digits_in_base(number, base, nb_digits)
