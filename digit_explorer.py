@@ -38,9 +38,6 @@ DEFAULT_BASE   = 10
 def main() -> None:
     """Parse command-line arguments and run the digit trajectory plotting workflow."""
 
-    import sys
-    sys.argv = ["digit_explorer.py", "-c", "pi*1", "-d", "1000", "--no-save", "--disp"]
-
     parser = argparse.ArgumentParser(
         description=("Plot the digit trajectory of a given constant in a given base. The image is saved in folder out/ as"
                      + " as '<constant>_<base>_<digits>.png'"),
