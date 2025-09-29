@@ -22,6 +22,7 @@ python digit_explorer.py --constant pi --digits 31416 --base 10
 """
 
 import argparse
+import textwrap
 
 import matplotlib.pyplot as plt
 
@@ -36,6 +37,10 @@ DEFAULT_BASE   = 10
 
 def main() -> None:
     """Parse command-line arguments and run the digit trajectory plotting workflow."""
+
+    import sys
+    sys.argv = ["digit_explorer.py", "-c", "pi*1", "-d", "1000", "--no-save", "--disp"]
+
     parser = argparse.ArgumentParser(
         description=("Plot the digit trajectory of a given constant in a given base. The image is saved in folder out/ as"
                      + " as '<constant>_<base>_<digits>.png'"),
@@ -48,6 +53,8 @@ def main() -> None:
                         help=f"base(s) of the constant(s). Must be > 1. Default is {DEFAULT_BASE}")
     parser.add_argument("--show", action="store_true", default=False,
                         help="if given, show plot(s) in individual window(s). Default is False")
+    parser.add_argument("--disp", action="store_true", default=False,
+                        help="if given, display the digit sequence. Default is False")
     parser.add_argument("--no-save", action="store_false", dest="save", default=True,
                         help="if given, do not save PNG image(s). If not, images are saved"
                         + " in folder out/ as '<constant>_<base>_<digits>.png, Default is False")
@@ -94,6 +101,10 @@ def main() -> None:
                 print(f"# Plotting {expr} in base {base} with {nb_digits:,} digit{s}")
                 constant_params = (expr, base, nb_digits)
                 digit_sequence = compute_digit_sequence(expr, base, nb_digits)
+                if args.disp:
+                    # display digits in chunks of 100
+                    print(f"First {nb_digits} digits of '{expr}' (rounded):")
+                    print(textwrap.fill("".join([str(d) for d in digit_sequence]), width=100))
                 pt_coords = get_points_from_digits(digit_sequence, base)
                 plot_sequence(pt_coords, constant_params, bool_show=args.show, bool_save=args.save)
 
