@@ -110,26 +110,6 @@ def build_latex_name(number_name: str) -> str:
     elif number_name.startswith("sqrt"):
         latex_name = fr"$\sqrt{{{number_name[4:]}}}$"
     else:
-        # wait what?
         latex_name = number_name
 
     return latex_name
-
-
-def build_basename(expr: str) -> str:
-    """
-    Build the basename for the PNG filename.
-
-    Parameters
-    ----------
-    expr : str
-        The initial expression.
-
-    Returns
-    -------
-    basename : str
-        basename without special characters (hopefully).
-    """
-    return expr.replace("+", "_pl_").replace("-", "_mn_")\
-               .replace("**", "_pw_").replace("*", "_tm_").replace("/", "_ov_")\
-               .replace("(", "_").replace(")", "_")

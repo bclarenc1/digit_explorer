@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from matplotlib.axes import Axes
 
-from utils.plot import generate_path_params, build_latex_name, build_basename
+from utils.plot import generate_path_params, build_latex_name
+from utils.expression import build_basename
 
 def add_inset(ax: Axes, base: int, legend_position: str = "upper right") -> None:
     """
@@ -22,7 +23,7 @@ def add_inset(ax: Axes, base: int, legend_position: str = "upper right") -> None
     base : int
         Radix base (number of possible directions).
     legend_position : str, optional
-        Position of inset legend (default is "upper right").
+        Position of inset legend (default is ``upper right``).
     """
 
     inset_ax = inset_axes(ax, width="20%", height="20%", loc=legend_position)
@@ -52,17 +53,17 @@ def plot_sequence(pt_coords: Tuple[np.ndarray, np.ndarray],
     number_params : tuple
         (expr, base, nb_digits) for the sequence.
     legend_position : str, optional
-        Position of inset legend (default is "upper right").
+        Position of inset legend (default is ``upper right``).
     bool_show : bool, optional
-        If True, display the plot (default is False).
+        If ``True``, display the plot (default is ``False``).
     bool_save : bool, optional
-        If True, save the plot (default is True).
+        If ``True``, save the plot (default is ``True``).
     """
     xs, ys = pt_coords
     expr, base, nb_digits = number_params
     cols, avg_step = generate_path_params(nb_digits)
 
-    fig, ax = plt.subplots(1, 1, figsize=(8,8))
+    fig, ax = plt.subplots(1, 1, figsize=(6, 6))
 
     # path
     ax.scatter(xs, ys, color=cols, marker="o", s=1)
@@ -83,9 +84,9 @@ def plot_sequence(pt_coords: Tuple[np.ndarray, np.ndarray],
     # show or save figure?
     if bool_save:
         basename = build_basename(expr)
-        savepath = f"out/{basename}_{base:02d}_{nb_digits:06d}.png"
-        fig.savefig(savepath)
-        print(f"  Plot saved: {savepath}")
+        savepath = f"out/{basename}_{base:03d}_{nb_digits:06d}.png"
+        fig.savefig(savepath, bbox_inches="tight")
+        print(f"  Plot saved:     {savepath}")
     if bool_show:
         fig.show()
     else:
