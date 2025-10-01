@@ -3,14 +3,19 @@ If each digit was representing a unit step in a given direction, what trajectory
 
 This tool allows to visualize such trajectories: choose a constant, a number of digits (up to 100,000) and even the numerical base to express it, and admire the random path it generates. Like this one:
 
-<img src="img/pi_10_069420_example.png" alt="Trajectory of 69420 digits of pi in base 10" width="690"/>
+<img src="img/pi_010_069420_example.png" alt="Trajectory of 69420 digits of pi in base 10" width="690"/>
 
 ## Nice plot, but what am I looking at?
 You start at the <span style="color:darkred">reddest</span> coordinates (0,0). Then each digit moves you by 1 unit in its assigned direction, which is indicated by the compass (0 points north in all bases).
 
 For instance, for &pi; = 3.14159..., you will first move north-east (1), then south-east (4), then north-east (1), then south (5), then north-west (9), and so on. The last point is the <span style="color:deepskyblue">darkest blue</span> one.
 
-Note than the slightest change in base (say base 16 vs base 17) radically changes the overall path. Some paths evolves around (0,0), other may drift away quickly.
+In fact, you can even visualize an arbitrarily complex expression, like `1 - atan(log10(sqrt(euler**3 / apery**.6)))` in base 13:
+
+<img src="img/awful_expression_example.png" alt="Trajectory of too munay digits of some cursed nonsensical expression" width="690"/>
+
+
+The slightest change in base (say base 16 vs base 17) radically changes the overall path. Some paths stay close to (0,0), other may drift away quickly. Some even stay in a single quadrant!
 
 ## How to use the tool?
 1. Go to the root directory
