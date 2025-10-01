@@ -12,17 +12,18 @@ Usage
 -----
 Run from the command line with optional arguments for constants, bases, and digit counts.
 
-Example
--------
+Examples
+--------
 python digit_explorer.py --constant pi --digits 31416 --base 10
+python digit_explorer.py --constant "phi-1" "sin(log10(sqrt(pi/e**2))" --digits "69" "420" "69420" --base "8" "16" "123"
+
 
 @author: Benjamin Clarenc
-@date:   2025-09-24
+@date:   2025-10-01
 @github: bclarenc1
 """
 
 import argparse
-import textwrap
 
 import matplotlib.pyplot as plt
 
@@ -39,8 +40,8 @@ def main() -> None:
     """Parse command-line arguments and run the digit trajectory plotting workflow."""
 
     parser = argparse.ArgumentParser(
-        description=("Plot the digit trajectory of a given constant in a given base. The image is saved in folder out/ as"
-                     + " as '<constant>_<base>_<digits>.png'"),
+        description=("Plot the digit trajectory of a given constant in a given base. The image and the digit sequence"
+                     + "are saved in folder out/ as '<constant>_<base>_<digits>.png' and '<idem>.txt'"),
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("-c", "--constant", nargs="+", type=str, default=["pi"], dest="expr",
                         help="constant(s) of which to plot the digit trajectory. Valid values are: 'pi', 'e', 'phi'. Default is 'pi'")
@@ -60,16 +61,16 @@ def main() -> None:
 
     parser.epilog = ("Examples:\n"
                   + f'  python {parser.prog}                                                 -> plot the first 31416 digits of pi in base 10\n'
-                  + f'  python {parser.prog} --constant "phi" --digits 20000 --base 16       -> plot the first 20000 digits of phi in base 16\n'
-                  + f'  python {parser.prog} -c "phi" -d 20000 -base 16 --show --no-save     -> show the previous trajectory and do not save it\n'
+                  + f'  python {parser.prog} --constant "phi" --digits 2000 --base 16 --disp -> plot the first 2000 digits of phi in base 16 and display them in plain text\n'
+                  + f'  python {parser.prog} -c "phi" -d 20000 -base 16 --show --no-save     -> show the previous trajectory and do not save it, nor the digits\n'
                   + f'  python {parser.prog} -c "e" "pi" -d 1234 5678 -b 7 11 13             -> plot the first 1234 and 5678 digits of e and pi'
-                  +  ' in bases 7, 11 and 13, and save them in 12 separate files\n'
+                  +  ' in bases 7, 11 and 13, and save them in 12 separate PNG files and 12 separate text files\n'
                   + f'  python {parser.prog} -c "sin(log10(sqrt(apery**3/(euler+1))))" -d 50 -> plot the first 50 digits of this awful expression\n\n'
                   +  'Important note:\n'
                   +  '  An expression cannot start with "-" (like --constant "-2*pi"). Either add an initial space (--constant " -2*pi")'
                   +  ' or rephrase the expression (--constant "pi*(-2)").\n\n'
                   +  'Note for --nerds-- astute users:\n'
-                  +  '  You may have noticed that the very last plotted digit is sometimes rounded up. This is due to how digits are computed given a precision.\n')
+                  +  '  You may have noticed that the very last digits are sometimes rounded up. This is due to how digits are computed given a precision.\n')
     args = parser.parse_args()
 
     # Check inputs
@@ -97,11 +98,8 @@ def main() -> None:
                 s = "" if args.digits == 1 else "s"
                 print(f"# Plotting {expr} in base {base} with {nb_digits:,} digit{s}")
                 constant_params = (expr, base, nb_digits)
-                digit_sequence = compute_digit_sequence(expr, base, nb_digits)
-                if args.disp:
-                    # display digits in chunks of 100
-                    print(f"First {nb_digits} digits of '{expr}' (rounded):")
-                    print(textwrap.fill("".join([str(d) for d in digit_sequence]), width=100))
+                digit_sequence = compute_digit_sequence(expr, base, nb_digits,
+                                                        bool_disp=args.disp, bool_save=args.save)
                 pt_coords = get_points_from_digits(digit_sequence, base)
                 plot_sequence(pt_coords, constant_params, bool_show=args.show, bool_save=args.save)
 

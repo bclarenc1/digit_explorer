@@ -2,7 +2,8 @@
 # pylint: disable=broad-exception-caught
 
 """
-Utility functions and constants for building the restricted mathematical environment of mpmath.
+Utility functions and constants for building the restricted mathematical environment of mpmath,
+and path-compliant filenames.
 
 This module exposes standard functions and constants from mpmath, in order to allow the evaluation
 of safe expressions only.
@@ -103,3 +104,22 @@ def parse_expr(expr: str) -> Any:
         return x
     except Exception as e:
         raise ValueError(f"Invald expression: {expr}\n{e}") from e
+
+
+def build_basename(expr: str) -> str:
+    """
+    Build the basename for the name of the output files.
+
+    Parameters
+    ----------
+    expr : str
+        The initial expression.
+
+    Returns
+    -------
+    basename : str
+        basename with only characters valid for a filename.
+    """
+    return expr.replace("+", "_pl_").replace("-", "_mn_")\
+               .replace("**", "_pw_").replace("*", "_tm_").replace("/", "_ov_")\
+               .replace("(", "_").replace(")", "_")
