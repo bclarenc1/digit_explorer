@@ -3,19 +3,19 @@
 # pylint: disable=superfluous-parens
 
 """
-Main script for visualizing digit trajectories of mathematical constants.
+Main script for visualizing digit trajectories of mathematical constants and expressions.
 
-This script allows you to select constants, bases, and digit counts via command-line arguments,
-computes their digit sequences, converts them to trajectory points, and plots or saves the resulting images.
+This script allows you to select expressions, bases, and number of digits via command-line arguments,
+computes the digit sequences, converts them to trajectory points, and plots or saves the resulting images and sequences.
 
 Usage
 -----
-Run from the command line with optional arguments for constants, bases, and digit counts.
+Run from the command line with optional arguments for expressions, bases, and number of digits.
 
 Examples
 --------
-python digit_explorer.py --constant pi --digits 31416 --base 10
-python digit_explorer.py --constant "phi-1" "sin(log10(sqrt(pi/e**2))" --digits "69" "420" "69420" --base "8" "16" "123"
+python digit_explorer.py --expr "pi" --digits "31416" --base "10"
+python digit_explorer.py --expr "phi-1" "sin(log10(sqrt(pi/e**2))" --digits "69" "420" "69420" --base "8" "16" "123"
 
 
 @author: Benjamin Clarenc
@@ -40,35 +40,35 @@ def main() -> None:
     """Parse command-line arguments and run the digit trajectory plotting workflow."""
 
     parser = argparse.ArgumentParser(
-        description=("Plot the digit trajectory of a given constant in a given base. The image and the digit sequence"
-                     + "are saved in folder out/ as '<constant>_<base>_<digits>.png' and '<idem>.txt'"),
+        description=("Plot the digit trajectory of a given constant or expression in a given base. The image and the digit sequence"
+                     + " are saved in folder out/ as '<expression>_<base>_<digits>.png' and '(idem).txt'"),
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("-c", "--constant", nargs="+", type=str, default=["pi"], dest="expr",
-                        help="constant(s) of which to plot the digit trajectory. Valid values are: 'pi', 'e', 'phi'. Default is 'pi'")
+    parser.add_argument("-e", "--expr", "--expression", nargs="+", type=str, default=["pi"], dest="expr",
+                        help="expressions(s) of which to plot the digit trajectory. Expressions can be constants (see examples). Default is 'pi'")
     parser.add_argument("-d", "--digits", nargs="+", type=int, default=[DEFAULT_DIGITS],
                         help=f"number(s) of digits to plot. Max is {MAX_DIGITS}. Default is {DEFAULT_DIGITS}")
     parser.add_argument("-b", "--base", nargs="+", type=int, default=[DEFAULT_BASE],
-                        help=f"base(s) of the constant(s). Must be > 1. Default is {DEFAULT_BASE}")
+                        help=f"base(s) of the expression(s). Must be > 1. Default is {DEFAULT_BASE}")
     parser.add_argument("--show", action="store_true", default=False,
                         help="if given, show plot(s) in individual window(s). Default is False")
     parser.add_argument("--disp", action="store_true", default=False,
                         help="if given, display the digit sequence. Default is False")
     parser.add_argument("--no-save", action="store_false", dest="save", default=True,
-                        help="if given, do not save PNG image(s). If not, images are saved"
-                        + " in folder out/ as '<constant>_<base>_<digits>.png, Default is False")
+                        help="if given, do not save PNG image(s) nor text file(s). If not, images and sequences"
+                        + " are saved in folder out/ as '<expr>_<base>_<digits>.png' and '(idem).txt', Default is False")
     parser.add_argument("-l", "--list", action="store_true",
                         help="if given, show the lists of valid mathematical functions and constants.")
 
     parser.epilog = ("Examples:\n"
                   + f'  python {parser.prog}                                                 -> plot the first 31416 digits of pi in base 10\n'
-                  + f'  python {parser.prog} --constant "phi" --digits 2000 --base 16 --disp -> plot the first 2000 digits of phi in base 16 and display them in plain text\n'
-                  + f'  python {parser.prog} -c "phi" -d 20000 -base 16 --show --no-save     -> show the previous trajectory and do not save it, nor the digits\n'
-                  + f'  python {parser.prog} -c "e" "pi" -d 1234 5678 -b 7 11 13             -> plot the first 1234 and 5678 digits of e and pi'
+                  + f'  python {parser.prog} --expr "phi" --digits 2000 --base 16 --disp     -> plot the first 2000 digits of phi in base 16 and display them in plain text\n'
+                  + f'  python {parser.prog} -e "phi" -d 20000 -base 16 --show --no-save     -> show the previous trajectory and do not save it, nor the digits\n'
+                  + f'  python {parser.prog} -e "e" "pi" -d 1234 5678 -b 7 11 13             -> plot the first 1234 and 5678 digits of e and pi'
                   +  ' in bases 7, 11 and 13, and save them in 12 separate PNG files and 12 separate text files\n'
-                  + f'  python {parser.prog} -c "sin(log10(sqrt(apery**3/(euler+1))))" -d 50 -> plot the first 50 digits of this awful expression\n\n'
+                  + f'  python {parser.prog} -e "sin(log10(sqrt(apery**3/(euler+1))))" -d 50 -> plot the first 50 digits of this awful expression\n\n'
                   +  'Important note:\n'
-                  +  '  An expression cannot start with "-" (like --constant "-2*pi"). Either add an initial space (--constant " -2*pi")'
-                  +  ' or rephrase the expression (--constant "pi*(-2)").\n\n'
+                  +  '  An expression cannot start with "-" (like --expr "-2*pi"). Either add an initial space (--expr " -2*pi")'
+                  +  ' or rephrase the expression (--expr "pi*(-2)").\n\n'
                   +  'Note for --nerds-- astute users:\n'
                   +  '  You may have noticed that the very last digits are sometimes rounded up. This is due to how digits are computed given a precision.\n')
     args = parser.parse_args()
