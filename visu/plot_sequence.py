@@ -63,7 +63,7 @@ def plot_sequence(pt_coords: Tuple[np.ndarray, np.ndarray],
     expr, base, nb_digits = number_params
     cols, avg_step = generate_path_params(nb_digits)
 
-    fig, ax = plt.subplots(1, 1, figsize=(8,8))
+    fig, ax = plt.subplots(1, 1, figsize=(6, 6))
 
     # path
     ax.scatter(xs, ys, color=cols, marker="o", s=1)
