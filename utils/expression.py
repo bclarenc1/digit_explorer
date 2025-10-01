@@ -118,8 +118,11 @@ def build_basename(expr: str) -> str:
     Returns
     -------
     basename : str
-        basename with only characters valid for a filename.
+        Whitespace-free basename with only characters valid for a filename
     """
-    return expr.replace("+", "_pl_").replace("-", "_mn_")\
+    expr = expr.replace("+", "_pl_").replace("-", "_mn_")\
                .replace("**", "_pw_").replace("*", "_tm_").replace("/", "_ov_")\
                .replace("(", "_").replace(")", "_")
+    expr = "".join(expr.split())
+
+    return expr
